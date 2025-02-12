@@ -21,7 +21,12 @@ app.get('/', (c) => {
     const startTime = new Date();
     const body = await c.req.json();
     const msg = atob(body.message.data || '');
+    const msgAsJson = JSON.parse(msg);
     console.log(`Recieved message payload on /pubsub/subscriber. Msg: ${msg}, Full payload: ${JSON.stringify(body)}`);
+    if (msgAsJson && msgAsJson.forceDeadLetter == "yes") {
+      console.log('This one is a dead letter test, returning error status code');
+      throw new Error('Bruh this is a dead letter test');
+    }
     counter++;
     if (counter % 2 === 0) {
       console.log(`Sleeping for a bit`);
