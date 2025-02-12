@@ -41,7 +41,8 @@ app.get('/', (c) => {
         "date": Date.now().toString(),
         "payload": json,
       };
-      await publish(topic, JSON.stringify(msg));
+      const orderingKey = json.orderingKey || undefined;
+      await publish(topic, JSON.stringify(msg), orderingKey);
       return c.text(`Message published to ${topic}`);
     } catch (error) {
       console.error('Encountered problem publishing message. ', Bun.inspect(error));
@@ -49,12 +50,16 @@ app.get('/', (c) => {
     }
   });
 
-async function publish(topicNameOrId: string, data: string) {
+async function publish(topicNameOrId: string, data: string, orderingKey: string | undefined) {
   const dataBuffer = Buffer.from(data);
   const topic = pubSubClient.topic(topicNameOrId);
+  const payload = {
+    data: dataBuffer,
+    orderingKey: orderingKey,
+  };
 
   try {
-    const messageId = await topic.publishMessage({ data: dataBuffer });
+    const messageId = await topic.publishMessage(payload);
     console.log(`Message ${messageId} published`);
   } catch (error) {
     console.error(`Received error while publishing: ${(error as Error).message}`);
