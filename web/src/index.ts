@@ -20,7 +20,8 @@ app.get('/', (c) => {
   .post('/pubsub/subscriber', async (c) => {
     const startTime = new Date();
     const body = await c.req.json();
-    console.log('Recieved message on /pubsub/subscriber', body);
+    console.log('Recieved message payload on /pubsub/subscriber', body);
+    console.log('Decoded message is: ', atob(body.message.data || ''));
     counter++;
     if (counter % 2 === 0) {
       console.log(`Sleeping for a bit`);
