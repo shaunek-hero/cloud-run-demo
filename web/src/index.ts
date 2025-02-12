@@ -6,6 +6,8 @@ const app = new Hono();
 const pubSubClient = new PubSub();
 const topic = 'demo-topic';
 
+let counter = 0;
+
 app.get('/', (c) => {
   return c.text('Hello Hono!')
 })
@@ -16,8 +18,17 @@ app.get('/', (c) => {
   //   return c.json({ error: 'Internal Server Error' }, 500);
   // })
   .post('/pubsub/subscriber', async (c) => {
+    const startTime = new Date();
     const body = await c.req.json();
     console.log('Recieved message on /pubsub/subscriber', body);
+    counter++;
+    if (counter % 2 === 0) {
+      console.log(`Sleeping for a bit`);
+      await Bun.sleep(5000);
+    }
+    const endTime = new Date();
+    const ms = endTime.getTime() - startTime.getTime();
+    console.log(`Took ${ms} to process`);
     return c.json({ thedata: body });
   })
   .post('/pubsub/publish', async (c) => {
