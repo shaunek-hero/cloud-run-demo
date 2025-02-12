@@ -42,8 +42,12 @@ app.get('/', (c) => {
         "payload": json,
       };
       const orderingKey = json.orderingKey || undefined;
-      await publish(topic, JSON.stringify(msg), orderingKey);
-      return c.text(`Message published to ${topic}`);
+      const multiplier = parseInt(json.multiplier) || 1;
+      for (let i = 0; i < multiplier; i++) {
+        const thisMsg = { ...msg, multiplierCounter: i + 1 };
+        await publish(topic, JSON.stringify(thisMsg), orderingKey);
+      }
+      return c.text(`Published ${multiplier} message(s) to topic "${topic}"`);
     } catch (error) {
       console.error('Encountered problem publishing message. ', Bun.inspect(error));
       throw error;
