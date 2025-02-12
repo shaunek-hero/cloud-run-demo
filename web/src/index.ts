@@ -23,7 +23,7 @@ app.get('/', (c) => {
     const msg = atob(body.message.data || '');
     const msgAsJson = JSON.parse(msg);
     console.log(`Recieved message payload on /pubsub/subscriber. Msg: ${msg}, Full payload: ${JSON.stringify(body)}`);
-    if (msgAsJson && msgAsJson.forceDeadLetter == "yes") {
+    if (msgAsJson && msgAsJson.payload && msgAsJson.payload.forceDeadLetter == "yes") {
       console.log('This one is a dead letter test, returning error status code');
       throw new Error('Bruh this is a dead letter test');
     }
