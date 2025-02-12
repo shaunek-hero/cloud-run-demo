@@ -4,6 +4,7 @@ import { PubSub } from '@google-cloud/pubsub';
 
 const app = new Hono();
 const pubSubClient = new PubSub();
+const topic = 'demo-topic';
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')
@@ -28,8 +29,8 @@ app.get('/', (c) => {
         "date": Date.now().toString(),
         "payload": json,
       };
-      await publish('demo-topic', JSON.stringify(msg));
-      return c.text('Okay');
+      await publish(topic, JSON.stringify(msg));
+      return c.text(`Message published to ${topic}`);
     } catch (error) {
       console.error('Encountered problem publishing message. ', Bun.inspect(error));
       throw error;
