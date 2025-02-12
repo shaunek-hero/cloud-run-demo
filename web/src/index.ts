@@ -23,7 +23,12 @@ app.get('/', (c) => {
     try {
       const json = await c.req.json();
       console.log('About to publish this message:', json);
-      await publish('demo-topic', 'this is a test');
+      const msg = {
+        "test": "This is a test!",
+        "date": Date.now().toString(),
+        "payload": json,
+      };
+      await publish('demo-topic', JSON.stringify(msg));
       return c.text('Okay');
     } catch (error) {
       console.error('Encountered problem publishing message. ', Bun.inspect(error));
