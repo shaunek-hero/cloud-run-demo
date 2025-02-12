@@ -35,7 +35,7 @@ app.get('/', (c) => {
   .post('/pubsub/publish', async (c) => {
     try {
       const json = await c.req.json();
-      console.log('About to publish this message:', json);
+      console.log('About to publish this message:', JSON.stringify(json));
       const msg = {
         "test": "This is a test!",
         "date": Date.now().toString(),
